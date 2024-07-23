@@ -1,16 +1,29 @@
 package main
 
 import (
+	"games/app/provider"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 func main() {
-	router := gin.Default()
+	defer recycle()
 
+	// 注册服务
+	provider.Register()
+
+	// 注册路由
+	router := gin.Default()
 	customRegister(router)
 
-	err := router.Run("127.0.0.1:8888")
+	err := router.Run(":8888")
 	if err != nil {
+		log.Fatalf("Failed to run server: %v", err)
 		return
 	}
+}
+
+// 失败回调
+func recycle() {
+	log.Println("recycling......")
 }

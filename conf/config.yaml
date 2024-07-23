@@ -1,0 +1,48 @@
+app:
+  name: games
+  key: Aa111111
+  debug: true
+  timezone: Asia/Shanghai
+  proxy: http://127.0.0.1:1086
+
+server:
+  port: 8888
+  readTimeout: 10
+  writeTimeout: 10
+
+database:
+  jenny:
+    host: 127.0.0.1
+    port: 3306
+    username: root
+    password: 111111
+    database: jenny
+    pool:
+      maxIdleConn: 11
+      maxOpenConn: 100
+      MaxLifetime: 3600000000000
+  xh:
+    host: 127.0.0.1
+    port: 3306
+    username: root
+    password: 111111
+    database: xh_crm
+    pool:
+      maxIdleConn: 10
+      maxOpenConn: 100
+      MaxLifetime: 3600000000000
+
+
+filesystem:
+  disk: local
+
+cache:
+  store: redis
+  database: 1
+  prefix: jenny_
+
+logging:
+  channel: sls
+  level: debug
+  path: debug
+  logStore: logs
