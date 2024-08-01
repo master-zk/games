@@ -71,8 +71,9 @@ func genSystemDb() {
 	tables := [...]string{
 		"users",
 		"category",
-		"article",
 		"image",
+		"article",
+		"category_item_relation",
 	}
 	for _, value := range tables {
 		a := g.GenerateModel(value, fieldOpts...)
@@ -133,7 +134,6 @@ func genGameDb() {
 	fieldOpts := []gen.ModelOpt{jsonField}
 	g.UseDB(global.DB.Jenny)
 	tables := [...]string{
-		"system",
 		"steam_game_image",
 		"steam_game_video",
 	}

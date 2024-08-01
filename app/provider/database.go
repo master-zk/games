@@ -9,7 +9,6 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"log"
-	"reflect"
 	"time"
 )
 
@@ -21,13 +20,6 @@ var DatabaseProvider = &databaseProvider{}
 func (p *databaseProvider) Register() {
 	global.DB.Jenny = p.registerDb(global.DB.Jenny, global.Config.Databases.Jenny)
 	global.DB.Xh = p.registerDb(global.DB.Jenny, global.Config.Databases.Xh)
-	fmt.Println("-----------------------------------")
-	fmt.Printf("t = %T, v= %v, typeOf = %v", global.DB.Jenny, &global.DB.Jenny, reflect.TypeOf(global.DB.Jenny).Kind())
-	fmt.Printf("t = %T, v= %v, typeOf = %v", global.DB.Xh, &global.DB.Xh, reflect.TypeOf(global.DB.Xh).Kind())
-	fmt.Println("-----------------------------------")
-	//	p.registerDb(global.DB.Xh, global.Config.Databases.Xh)
-	//	p.registerDb(global.DBJenny, global.Config.Databases.Jenny)
-	//	p.registerDb(global.DBXh, global.Config.Databases.Xh)
 }
 
 func (p *databaseProvider) registerDb(db *gorm.DB, dbConfig config.DatabaseConfig) *gorm.DB {

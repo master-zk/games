@@ -1,6 +1,7 @@
 package main
 
 import (
+	"games/app/global"
 	"games/app/provider"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -16,7 +17,7 @@ func main() {
 	router := gin.Default()
 	customRegister(router)
 
-	err := router.Run(":8888")
+	err := router.Run(":" + global.Config.Server.Port)
 	if err != nil {
 		log.Fatalf("Failed to run server: %v", err)
 		return

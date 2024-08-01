@@ -19,5 +19,7 @@ func Register() {
 	ValidateProvider.Register()
 
 	// redis
+	RedisProvider.Register()
+
 	// 日志
 }

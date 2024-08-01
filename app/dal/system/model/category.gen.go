@@ -16,6 +16,7 @@ const TableNameCategory = "category"
 type Category struct {
 	ID        uint64         `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	Pid       int            `gorm:"column:pid;not null;comment:PId" json:"pid"`                  // PId
+	Code      string         `gorm:"column:code;not null;comment:code" json:"code"`               // code
 	IsMenu    uint           `gorm:"column:is_menu;not null;comment:是菜单：1=是, 2=否" json:"is_menu"` // 是菜单：1=是, 2=否
 	Title     string         `gorm:"column:title;not null;comment:标题" json:"title"`               // 标题
 	Icon      string         `gorm:"column:icon;not null;comment:图标" json:"icon"`                 // 图标

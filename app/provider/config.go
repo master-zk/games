@@ -38,6 +38,8 @@ func (p *configProvider) Register() {
 
 		// 重新设置数据库连接
 		DatabaseProvider.Register()
+		// 重新设置Redis连接
+		RedisProvider.Register()
 	})
 
 	// 将配置映射到结构体

@@ -11,9 +11,13 @@ func GeneratedRegister(g *gin.RouterGroup) {
 	{
 		userGroup := systemGroup.Group("/user")
 		{
-			// Driver API Callback
 			userGroup.POST("/login", user.Login)
-			userGroup.POST("/logout", user.Logout)
+		}
+		userGroupLogin := systemGroup.Group("/user")
+		userGroupLogin.Use()
+		{
+			// Driver API Callback
+			userGroupLogin.POST("/logout", user.Logout)
 		}
 
 		categoryGroup := systemGroup.Group("/category")

@@ -29,6 +29,7 @@ func newCategory(db *gorm.DB, opts ...gen.DOOption) category {
 	_category.ALL = field.NewAsterisk(tableName)
 	_category.ID = field.NewUint64(tableName, "id")
 	_category.Pid = field.NewInt(tableName, "pid")
+	_category.Code = field.NewString(tableName, "code")
 	_category.IsMenu = field.NewUint(tableName, "is_menu")
 	_category.Title = field.NewString(tableName, "title")
 	_category.Icon = field.NewString(tableName, "icon")
@@ -49,6 +50,7 @@ type category struct {
 	ALL       field.Asterisk
 	ID        field.Uint64
 	Pid       field.Int    // PId
+	Code      field.String // code
 	IsMenu    field.Uint   // 是菜单：1=是, 2=否
 	Title     field.String // 标题
 	Icon      field.String // 图标
@@ -74,6 +76,7 @@ func (c *category) updateTableName(table string) *category {
 	c.ALL = field.NewAsterisk(table)
 	c.ID = field.NewUint64(table, "id")
 	c.Pid = field.NewInt(table, "pid")
+	c.Code = field.NewString(table, "code")
 	c.IsMenu = field.NewUint(table, "is_menu")
 	c.Title = field.NewString(table, "title")
 	c.Icon = field.NewString(table, "icon")
@@ -105,9 +108,10 @@ func (c *category) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (c *category) fillFieldMap() {
-	c.fieldMap = make(map[string]field.Expr, 9)
+	c.fieldMap = make(map[string]field.Expr, 10)
 	c.fieldMap["id"] = c.ID
 	c.fieldMap["pid"] = c.Pid
+	c.fieldMap["code"] = c.Code
 	c.fieldMap["is_menu"] = c.IsMenu
 	c.fieldMap["title"] = c.Title
 	c.fieldMap["icon"] = c.Icon

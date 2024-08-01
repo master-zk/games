@@ -18,7 +18,6 @@ import (
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:             db,
-		SteamGame:      newSteamGame(db, opts...),
 		SteamGameImage: newSteamGameImage(db, opts...),
 		SteamGameVideo: newSteamGameVideo(db, opts...),
 	}
@@ -27,7 +26,6 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 type Query struct {
 	db *gorm.DB
 
-	SteamGame      steamGame
 	SteamGameImage steamGameImage
 	SteamGameVideo steamGameVideo
 }
@@ -37,7 +35,6 @@ func (q *Query) Available() bool { return q.db != nil }
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:             db,
-		SteamGame:      q.SteamGame.clone(db),
 		SteamGameImage: q.SteamGameImage.clone(db),
 		SteamGameVideo: q.SteamGameVideo.clone(db),
 	}
@@ -54,21 +51,18 @@ func (q *Query) WriteDB() *Query {
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:             db,
-		SteamGame:      q.SteamGame.replaceDB(db),
 		SteamGameImage: q.SteamGameImage.replaceDB(db),
 		SteamGameVideo: q.SteamGameVideo.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	SteamGame      *steamGameDo
 	SteamGameImage *steamGameImageDo
 	SteamGameVideo *steamGameVideoDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		SteamGame:      q.SteamGame.WithContext(ctx),
 		SteamGameImage: q.SteamGameImage.WithContext(ctx),
 		SteamGameVideo: q.SteamGameVideo.WithContext(ctx),
 	}

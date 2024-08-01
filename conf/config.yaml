@@ -1,12 +1,12 @@
 app:
-  name: games
-  key: Aa111111
+  name: "games"
+  key: "NTI4NTE1MTc0NmI0OWExOTY1MTQ5ODhiY2E3YmY2ZGU="
   debug: true
-  timezone: Asia/Shanghai
-  proxy: http://127.0.0.1:1086
+  timezone: "Asia/Shanghai"
+  proxy: "http://127.0.0.1:1086"
 
 server:
-  port: 8888
+  port: 8081
   readTimeout: 10
   writeTimeout: 10
 
@@ -40,6 +40,12 @@ cache:
   store: redis
   database: 1
   prefix: jenny_
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: 111111
+  database: 0
 
 logging:
   channel: sls
