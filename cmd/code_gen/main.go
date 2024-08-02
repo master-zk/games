@@ -3,27 +3,30 @@ package main
 import (
 	"fmt"
 	"games/app/global"
-	"games/app/provider"
+	"games/app/initialize"
+	"games/config"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"strings"
 )
 
 func main() {
-	provider.Register()
 
-	genSystemDb()
-	genGameDb()
+	config.LoadGlobalConfig()
+	// 初始化服务
+	initialize.AppInit()
+
+	genDb()
 }
 
-func genSystemDb() {
+func genDb() {
 	g := gen.NewGenerator(gen.Config{
 		// 相对执行`go run`时的路径, 会自动创建目录
-		OutPath:      "app/dal/system/repository",
+		OutPath:      "app/internal/repository",
 		OutFile:      "gen.go",
 		ModelPkgPath: "model",
 		WithUnitTest: false,
-		// 表字段可为 null 值时, 对应结体字段使用指针类型
+		// 表字段可为 null 值时, 对应体字段使用指针类型
 		FieldNullable: true,
 		// 表字段默认值与模型结构体字段零值不一致的字段, 在插入数据时需要赋值该字段值为零值的, 结构体字段须是指针类型才能成功, 即`FieldCoverable:true`配置下生成的结构体字段.
 		// 因为在插入时遇到字段为零值的会被GORM赋予默认值. 如字段`age`表默认值为10, 即使你显式设置为0最后也会被GORM设为10提交.
@@ -41,6 +44,7 @@ func genSystemDb() {
 		// Mode: gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface,
 		Mode: 0,
 	})
+	g.UseDB(global.DB)
 
 	// 自定义字段的数据类型
 	// 如果需要兼容protobuf，请统一数字类型为int64,
@@ -67,73 +71,13 @@ func genSystemDb() {
 	// 模型自定义选项组
 	fieldOpts := []gen.ModelOpt{jsonField}
 
-	g.UseDB(global.DB.Jenny)
 	tables := [...]string{
 		"users",
 		"category",
 		"image",
 		"article",
 		"category_item_relation",
-	}
-	for _, value := range tables {
-		a := g.GenerateModel(value, fieldOpts...)
-		g.ApplyBasic(a)
-	}
-	g.Execute()
-}
-
-func genGameDb() {
-	g := gen.NewGenerator(gen.Config{
-		// 相对执行`go run`时的路径, 会自动创建目录
-		OutPath:      "app/dal/game/repository",
-		OutFile:      "gen.go",
-		ModelPkgPath: "model",
-		WithUnitTest: false,
-		// 表字段可为 null 值时, 对应结体字段使用指针类型
-		FieldNullable: true,
-		// 表字段默认值与模型结构体字段零值不一致的字段, 在插入数据时需要赋值该字段值为零值的, 结构体字段须是指针类型才能成功, 即`FieldCoverable:true`配置下生成的结构体字段.
-		// 因为在插入时遇到字段为零值的会被GORM赋予默认值. 如字段`age`表默认值为10, 即使你显式设置为0最后也会被GORM设为10提交.
-		// 如果该字段没有上面提到的插入时赋零值的特殊需要, 则字段为非指针类型使用起来会比较方便.
-		FieldCoverable: false,
-		// 模型结构体字段的数字类型的符号表示是否与表字段的一致, `false`指示都用有符号类型
-		FieldSignable: true,
-		// 生成 gorm 标签的字段索引属性
-		FieldWithIndexTag: false,
-		// 生成 gorm 标签的字段类型属性
-		FieldWithTypeTag: false,
-		// WithDefaultQuery 生成默认查询结构体(作为全局变量使用), 即`Q`结构体和其字段(各表模型)
-		// WithoutContext 生成没有context调用限制的代码供查询
-		// WithQueryInterface 生成interface形式的查询代码(可导出), 如`Where()`方法返回的就是一个可导出的接口类型
-		// Mode: gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface,
-		Mode: 0,
-	})
-
-	// 自定义字段的数据类型
-	// 如果需要兼容protobuf，请统一数字类型为int64,
-	dataMap := map[string]func(detailType gorm.ColumnType) (dataType string){
-		"tinyint":   func(detailType gorm.ColumnType) (dataType string) { return "int" },
-		"smallint":  func(detailType gorm.ColumnType) (dataType string) { return "int" },
-		"mediumint": func(detailType gorm.ColumnType) (dataType string) { return "int64" },
-		"bigint":    func(detailType gorm.ColumnType) (dataType string) { return "int64" },
-		"int":       func(detailType gorm.ColumnType) (dataType string) { return "int" },
-	}
-	// 要先于`ApplyBasic`执行
-	g.WithDataTypeMap(dataMap)
-
-	// 自定义模型结体字段的标签
-	// 将特定字段名的 json 标签加上`string`属性,即 MarshalJSON 时该字段由数字类型转成字符串类型
-	jsonField := gen.FieldJSONTagWithNS(func(columnName string) (tagContent string) {
-		toStringField := `xxxxx_field, `
-		if strings.Contains(toStringField, columnName) {
-			return columnName + ",string"
-		}
-		return columnName
-	})
-
-	// 模型自定义选项组
-	fieldOpts := []gen.ModelOpt{jsonField}
-	g.UseDB(global.DB.Jenny)
-	tables := [...]string{
+		"steam_game",
 		"steam_game_image",
 		"steam_game_video",
 	}
@@ -170,7 +114,7 @@ func example() {
 		Mode: 0,
 	})
 	fmt.Println("-------------------")
-	fmt.Println(global.DB.Jenny)
+	fmt.Println(global.DB)
 
 	// 自定义字段的数据类型
 	// 如果需要兼容protobuf，请统一数字类型为int64,
@@ -197,7 +141,7 @@ func example() {
 	// 模型自定义选项组
 	fieldOpts := []gen.ModelOpt{jsonField}
 
-	g.UseDB(global.DB.Jenny)
+	g.UseDB(global.DB)
 	tables := [...]string{
 		"users",
 		"category",
@@ -252,7 +196,7 @@ func example() {
 	//g.ApplyBasic(genModel.User{})
 	//g.ApplyBasic(allModel...)
 
-	g.UseDB(global.DB.Xh)
+	g.UseDB(global.DB)
 	allModel := g.GenerateAllTable(fieldOpts...)
 	g.ApplyBasic(allModel...)
 	g.Execute()

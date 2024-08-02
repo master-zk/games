@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"games/app/cron/steam_game"
-	"games/app/provider"
+	"games/app/initialize"
+	"games/config"
 	"os"
 	"time"
 )
 
 func main() {
-	provider.Register()
+	config.LoadConfig()
+	initialize.AppInit()
 
 	funcName := ""
 	if len(os.Args) > 1 {

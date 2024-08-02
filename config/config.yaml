@@ -1,0 +1,39 @@
+app:
+  name: games
+  key: NTI4NTE1MTc0NmI0OWExOTY1MTQ5ODhiY2E3YmY2ZGU=
+  # debug release test
+  mode: release
+  debug: true
+  timezone: Asia/Shanghai
+
+server:
+  port: 8081
+  readTimeout: 10
+  writeTimeout: 10
+
+mysql:
+  default:
+    host: 127.0.0.1
+    port: 3306
+    username: root
+    password: 111111
+    database: jenny
+    pool:
+      maxIdleConn: 11
+      maxOpenConn: 100
+      MaxLifetime: 3600000000000
+
+
+filesystem:
+  disk: local
+
+redis:
+  default:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0
+
+log:
+  level: debug
+  filepath: /log/go/games

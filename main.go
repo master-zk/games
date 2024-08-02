@@ -2,26 +2,30 @@ package main
 
 import (
 	"games/app/global"
-	"games/app/provider"
+	"games/app/initialize"
+	"games/config"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
 func main() {
 	defer recycle()
+	// 加载配置文件
+	config.LoadGlobalConfig()
+	// 初始化服务
+	initialize.AppInit()
 
-	// 注册服务
-	provider.Register()
+	// 设置运行模式
+	gin.SetMode(global.Config.App.Mode)
+	// 创建一个gin引擎
+	engine := gin.New()
+	// 设置一个信任ip : 127.0.0.1
+	_ = engine.SetTrustedProxies([]string{"127.0.0.1"})
+	// 路由配置
+	configRoute(engine)
 
-	// 注册路由
-	router := gin.Default()
-	customRegister(router)
-
-	err := router.Run(":" + global.Config.Server.Port)
-	if err != nil {
-		log.Fatalf("Failed to run server: %v", err)
-		return
-	}
+	// 开启http服务
+	_ = engine.Run(":" + global.Config.Server.Port)
 }
 
 // 失败回调

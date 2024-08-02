@@ -42,7 +42,7 @@ type Response struct {
 
 func Success(c *gin.Context, data any) {
 	r := Response{
-		Code:      OK,
+		Code:      CodeOk,
 		Message:   SuccessMessage,
 		Timestamp: carbon.Now().Timestamp(),
 		Data:      data,
@@ -57,10 +57,20 @@ func Json(c *gin.Context, code int, response Response) {
 
 func Fail(c *gin.Context, message string) {
 	r := Response{
-		Code:      MessageError,
+		Code:      CodeMessageError,
 		Message:   message,
 		Timestamp: carbon.Now().Timestamp(),
 		Data:      nil,
+	}
+
+	Json(c, http.StatusOK, r)
+}
+
+func CodeResponse(c *gin.Context, code int) {
+	r := Response{
+		Code:      code,
+		Message:   GetCodeMsg(code),
+		Timestamp: carbon.Now().Timestamp(),
 	}
 
 	Json(c, http.StatusOK, r)
